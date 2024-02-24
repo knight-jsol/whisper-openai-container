@@ -4,7 +4,6 @@ import json
 import urllib3
 import urllib.parse
 import whisper
-import torch
 import boto3
 
 
@@ -24,10 +23,10 @@ def handler(event, context):
         # Downloading file to transcribe
         s3.download_file(bucket, key, audio_file)
 
-        # GPU!! (if available)
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        model = whisper.load_model("medium", download_root="/usr/local").to(device)
-        #model = whisper.load_model("medium")
+        # GPU not necessary here
+        device = "cpu"
+        model = whisper.load_model("large", download_root="/usr/local").to(device)
+        #model = whisper.load_model("large")
         #result = model.transcribe(audio_file, fp16=False, language='English', verbose=True)
         result = model.transcribe(audio_file, fp16=False, language='English')
         #print(s['text'].strip())
